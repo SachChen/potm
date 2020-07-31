@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    .active{width:150px}
+    .long{width:200px}
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <title>App Status</title>
+    <script src="static/js/jquery-3.4.1.min.js"  type="text/javascript"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+    <h2 align="center">{{ .IP }} - {{ .PORT }}</h2></br></br>
+
+    <table align="center" class="table table-hover" id="tablebox">
+        <tr>
+            <td class="long">服务</td>
+            <td class="active">状态</td>
+            <td class="active">内存(MB)</td>
+            <td class="active">CPU(%)</td>
+            <td class="long">启动时间</td>
+            <td class="active">版本号</td>
+	        <td class="active">日志查看</td>
+            <td class="active">操作</td>
+        </tr>
+    </table>
+
+    <script language="javascript">
+
+
+        function act(file,status) {
+            var st=String
+            if (status) {
+                st = "确认停止？"
+            }else {
+                st = "确认启动？"
+            }
+            if(confirm(st)){
+                if (status==false){
+                    axios.get("/pstart?ip=" + "{{ .IP }}" + "&" + "port=" + "{{ .PORT }}"+ "&" + "app=" + file)
+                }else{
+                    axios.get("/pstop?ip=" + "{{ .IP }}" + "&" + "port=" + "{{ .PORT }}"+ "&" + "app=" + file)
+                }
+            }
+        }
+
+
+    
+
+        function jiexi() {
+            //console.log(123)
+            var obj = JSON.parse("{{ .Info}}")
+            window.onload = async function () {
+	            var promiseAll = []
+                //var tdArr = document.getElementById('tablebox').firstElementChild;
+                var tdArr = document.getElementById('tablebox').firstElementChild;
+                for (var key in obj) {
+                    var List = obj[key]
+		            promiseAll.push(axios.get("/getproc?ip=" + "{{ .IP }}" + "&" + "port=" + "{{ .PORT }}"+ "&" + "app=" + key))
+                }
+		        Promise.all(promiseAll).then(rets=>{
+		            for (var key in rets) {
+                        var ac=String
+                        if (obj[rets[key].data.app].Status) {
+                            ac="停止"
+                        }else{
+                            ac="启动"
+                        }
+			            var tr = document.createElement("tr");
+			//console.log(rets[key].data)
+			            tr.innerHTML = '<td class="active" >' + rets[key].data.app + '</td> <td class="active">' + obj[rets[key].data.app].Status + '</td> <td class="active">' + rets[key].data.muse +  '</td> <td class="active">'+rets[key].data.cuse + '</td> <td class="active">' + obj[rets[key].data.app].Startup.replace("+0800", '') + '</td> <td class="active">' + obj[rets[key].data.app].Version + '</td> <td class="active"><a href='+"./seelog?app="+rets[key].data.app+"&port="+"{{ .PORT}}"+"&ip="+"{{ .IP}}"+"&lines=100 "+'target="_blank">点击查看</a></td> <input type="button" value='+ ac +' onclick="act(\''+rets[key].data.app+"',"+ obj[rets[key].data.app].Status+')" />';
+			            tdArr.appendChild(tr)
+		            }
+                    console.log(tdArr)
+                })
+                
+            }
+        }
+
+
+        jiexi()
+
+
+        //setInterval("jiexi()",2000);
+//}
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sys Info</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .active {
+            width: 200px
+        }
+
+        .el-table::before {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="background-color:lightcyan; height:50px;margin: 0px;">
+    <h2 style="color:dimgrey;line-height: 50px; ">HostInfo</h2>
+    </div>
+
+    <br><br><br><br>
+    <div id="app"></div>
+
+            <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+            <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+            <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+            <script type="x-template" id="app-tmp">
+    <div>
+        <sys-table />
+        <cpu-table />
+    </div>
+</script>
+            <script type="x-template" id="sys-table">
+    <el-table :data="tableData" align="center" style="width: 100%">
+        <el-table-column prop="Hostname" label="主机名" width="350">
+        </el-table-column>
+        <el-table-column prop="Os" label="系统类型" width="180">
+        </el-table-column>
+        <el-table-column prop="Release" label="内核版本" width="280">
+        </el-table-column>
+        <el-table-column prop="Zone" label="系统时区" width="180">
+        </el-table-column>
+        <el-table-column prop="Systime" label="系统时间" width="180">
+        </el-table-column>
+    </el-table>
+</script>
+<script type="x-template" id="cpu-table">
+    <div>
+        <br><br><br>
+        <el-table :data="tableData1" align="center" style="width: 100%">
+            <el-table-column prop="Class" label="处理器型号" width="350">
+            </el-table-column>
+            <el-table-column prop="Pcores" label="物理内核数" width="180">
+            </el-table-column>
+            <el-table-column prop="Lcores" label="逻辑内核数" width="280">
+            </el-table-column>
+            <el-table-column prop="Physical" label="处理器个数" width="180">
+            </el-table-column>
+            <el-table-column prop="Usage" label="处理器使用率(%)" width="180">
+            </el-table-column>
+        </el-table>
+        <br><br><br>
+        <el-table :data="tableData2" align="center" style="width: 100%">
+            <el-table-column prop="Total" label="RAM容量(MB)" width="350">
+            </el-table-column>
+            <el-table-column prop="Used" label="RAM使用(MB)" width="180">
+            </el-table-column>
+            <el-table-column prop="Avalible" label="RAM剩余(MB)" width="280">
+            </el-table-column>
+            <el-table-column prop="UsePec" label="RAM使用率(%)" width="180">
+            </el-table-column>
+            <el-table-column prop="" label="" width="180">
+            </el-table-column>
+        </el-table>
+        <br><br><br>
+        <el-table :data="tableData3" align="center" style="width: 100%">
+            <el-table-column prop="Path" label="挂载目录" width="350">
+            </el-table-column>
+            <el-table-column prop="Total" label="Disk大小(MB)" width="180">
+            </el-table-column>
+            <el-table-column prop="Used" label="Disk使用(MB)" width="280">
+            </el-table-column>
+            <el-table-column prop="UsePerc" label="Disk使用率(%)" width="180">
+            </el-table-column>
+            <el-table-column prop="" label="" width="180">
+            </el-table-column>
+        </el-table>
+    </div>
+</script>
+            <script>
+                Vue.component('sys-table', {
+                    template: '#sys-table',
+                    data() {
+                        return {
+                            tableData: []
+                        }
+                    },
+                    methods: {
+                        getsys() {
+                            axios.get("/getsys?ip=" + "{{ .IP }}" + "&" + "port=" + "{{ .PORT }}").then((res) => {
+                                this.tableData = [res.data]
+                            })
+                        }
+                    },
+                    mounted() {
+                        this.getsys()
+                        setInterval(() => {
+                            this.getsys();
+                        }, 1000);
+                    }
+                })
+                Vue.component('cpu-table', {
+                    template: '#cpu-table',
+                    data() {
+                        return {
+                            tableData1: [],
+                            tableData2: [],
+                            tableData3: [],
+                        }
+                    },
+                    methods: {
+                        getres() {
+                            axios.get("/getres?ip=" + "{{ .IP }}" + "&" + "port=" + "{{ .PORT }}").then((res) => {
+                                this.tableData1 = [res.data.Cpu]
+                                this.tableData2 = [res.data.Memory]
+                                this.tableData3 = res.data.Disk
+                            })
+                        }
+                    },
+                    mounted() {
+                        this.getres()
+                        setInterval(() => {
+                            this.getres();
+                        }, 3000);
+                    }
+                })
+                new Vue({
+                    el: '#app',
+                    template: `#app-tmp`
+                })
+            </script>
+</body>
+
+</html>

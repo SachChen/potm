@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    .active{width:200px}
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <title>App Status</title>
+    <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+
+</head>
+
+<body>
+    <h2 align="center">{{ .IP }} - {{ .PORT }}</h2></br></br>
+
+    <table align="center" class="table table-hover" id="tablebox">
+        <tr>
+            <td class="active">服务</td>
+            <td class="active">状态</td>
+            <td class="active">启动时间</td>
+            <td class="active">版本号</td>
+            <td class="active">日志查看</td>
+        </tr>
+        <tr id="res"> </tr>
+
+    </table>
+
+    <script language="javascript">
+        //function jiexi() {
+            var obj = JSON.parse("{{ .Info}}")
+            //console.log('obj', obj)
+            window.onload = function () {
+            //var tdArr = document.getElementById('res').firstElementChild;
+            //var tdArr = document.getElementById('res');
+            for (var key in obj) {
+                var List = obj[key]
+                    var tr = document.createElement("tr");
+                    //tr.innerHTML = '<td class="active" >' + key + '</td> <td class="active">' +List.Status + '</td> <td class="active">' + List.Startup.replace("+0800", '') + '</td> <td class="active">' + List.Version + '</td> <td class="active"><a href="http://'+"{{ .IP}}" +":"+ "{{ .PORT}}"+"/seelog?file="+key+"&lines=1000"+'"target="_blank">点击查看</a></td>';
+                    tr.innerHTML = '<td class="active" >' + key + '</td> <td class="active">' +List.Status + '</td> <td class="active">' + List.Startup.replace("+0800", '') + '</td> <td class="active">' + List.Version + '</td> <td class="active"><a href='+"./seelog?app="+key+"&port="+"{{ .PORT}}"+"&ip="+"{{ .IP}}"+"&lines=100 "+'target="_blank">点击查看</a></td>';
+                    tdArr.appendChild(tr)
+                }
+            }
+
+    </script>
+
+</body>
+
+</html>

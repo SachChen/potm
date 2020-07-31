@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <style>
+        .active{width:200px}
+    </style>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mgua</title>
+</head>
+
+<body>
+    <h1 align="center">Mgua管理中心</h1></br></br>
+    <table align="center" class="table table-hover" id="tablebox">
+        <tr>
+            <td class="active">IP地址</td>
+            <td class="active">主机名</td>
+            <td class="active">监听端口</td>
+            <td class="active">在线状态</td>
+            <td class="active">应用信息</td>
+            <td class="active">计划任务</td>
+        </tr>
+    </table>
+
+
+
+    <script language="javascript">
+        //function jiexi() {
+            var obj = JSON.parse("{{ .ginfo}}")
+            //console.log('obj', obj)
+            window.onload = function () {
+            var tdArr = document.getElementById('tablebox').firstElementChild;
+            for (var key in obj) {
+                var List = obj[key]
+                for (var gid in List.Port) {
+                    var tr = document.createElement("tr");
+                    //tr.innerHTML = '<td class="active" >' + key + '</td> <td class="active">' +List.Status + '</td> <td class="active">' + List.Startup.replace("+0800", '') + '</td> <td class="active">' + List.Version + '</td> <td class="active"><a href="http://'+"{{ .IP}}" +":"+ "{{ .PORT}}"+"/seelog?file="+key+"&lines=1000"+'"target="_blank">点击查看</a></td>';
+                    tr.innerHTML = '<td class="active" >' + key + '</td>  <td class="active" ><a href='+"./hostinfo?ip="+key+"&port=" + List.Port +' target="_blank">' + List.Hostname + '</a></td> <td class="active">' + List.Port[gid] +'</td> <td class="active">' +List.Status +  '</td> <td class="active"><a href='+"./status?ip="+key+"&port="+List.Port[gid]+' target="_blank">点击查看</a></td>' + '<td class="active"><a href='+"./cron?ip="+key+"&port="+List.Port[gid]+' target="_blank">点击查看</a></td>' ;
+                    tdArr.appendChild(tr)
+                }
+                }
+            }
+            
+
+    </script>
+</body>
+</html>

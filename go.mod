@@ -1,4 +1,4 @@
-module mgua
+module potm
 
 go 1.14
 

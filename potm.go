@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"mgua/gstatic"
+	"potm/gstatic"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

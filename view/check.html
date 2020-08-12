@@ -50,35 +50,26 @@
         }
 
 
-    
-
         function jiexi() {
-            //console.log(123)
             var obj = JSON.parse("{{ .Info}}")
             window.onload = async function () {
-	            var promiseAll = []
-                //var tdArr = document.getElementById('tablebox').firstElementChild;
                 var tdArr = document.getElementById('tablebox').firstElementChild;
-                for (var key in obj) {
-                    var List = obj[key]
-		            promiseAll.push(axios.get("/getproc?ip=" + "{{ .IP }}" + "&" + "port=" + "{{ .PORT }}"+ "&" + "app=" + key))
-                }
-		        Promise.all(promiseAll).then(rets=>{
-		            for (var key in rets) {
-                        var ac=String
-                        if (obj[rets[key].data.app].Status) {
+                axios.get("/allproc?ip=" + "{{ .IP }}" + "&" + "port=" + "{{ .PORT }}")
+                .then(function (response) {
+                for (var k in response.data) {
+                    var ac=String
+                        if (obj[response.data[k].app].Status) {
                             ac="停止"
                         }else{
                             ac="启动"
                         }
 			            var tr = document.createElement("tr");
-			//console.log(rets[key].data)
-			            tr.innerHTML = '<td class="active" >' + rets[key].data.app + '</td> <td class="active">' + obj[rets[key].data.app].Status + '</td> <td class="active">' + rets[key].data.muse +  '</td> <td class="active">'+rets[key].data.cuse + '</td> <td class="active">' + obj[rets[key].data.app].Startup.replace("+0800", '') + '</td> <td class="active">' + obj[rets[key].data.app].Version + '</td> <td class="active"><a href='+"./seelog?app="+rets[key].data.app+"&port="+"{{ .PORT}}"+"&ip="+"{{ .IP}}"+"&lines=100 "+'target="_blank">点击查看</a></td> <input type="button" value='+ ac +' onclick="act(\''+rets[key].data.app+"',"+ obj[rets[key].data.app].Status+')" />';
+			            tr.innerHTML = '<td class="active" >' + response.data[k].app + '</td> <td class="active">' + obj[response.data[k].app].Status + '</td> <td class="active">' + response.data[k].muse +  '</td> <td class="active">'+response.data[k].cuse + '</td> <td class="active">' + obj[response.data[k].app].Startup.replace("+0800", '') + '</td> <td class="active">' + obj[response.data[k].app].Version + '</td> <td class="active"><a href='+"./seelog?app="+response.data[k].app+"&port="+"{{ .PORT}}"+"&ip="+"{{ .IP}}"+"&lines=100 "+'target="_blank">点击查看</a></td> <input type="button" value='+ ac +' onclick="act(\''+response.data[k].app+"',"+ response.data[k].app.Status+')" />';
 			            tdArr.appendChild(tr)
 		            }
-                    console.log(tdArr)
-                })
-                
+                }).catch(function (error) {
+                console.log(error);
+                });               
             }
         }
 
@@ -87,8 +78,7 @@
 
 
         //setInterval("jiexi()",2000);
-//}
-</script>
+    </script>
 
 </body>
 

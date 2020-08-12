@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"potm/gstatic"
+	"mgua/gstatic"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -226,6 +226,20 @@ func main() {
 			return
 		}
 		defer resp.Body.Close()
+
+	})
+
+	r.GET("/allproc", func(c *gin.Context) {
+		ip := c.Query("ip")
+		port := c.DefaultQuery("port", "8010")
+		resp, err := http.Get("http://" + ip + ":" + port + "/allproc")
+		if err != nil {
+			fmt.Printf("get request failed, err:[%s]", err.Error())
+			return
+		}
+		defer resp.Body.Close()
+		bodyContent, err := ioutil.ReadAll(resp.Body)
+		c.String(http.StatusOK, string(bodyContent))
 
 	})
 

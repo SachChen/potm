@@ -64,7 +64,7 @@
                             ac="启动"
                         }
 			            var tr = document.createElement("tr");
-			            tr.innerHTML = '<td class="active" >' + response.data[k].app + '</td> <td class="active">' + obj[response.data[k].app].Status + '</td> <td class="active">' + response.data[k].muse +  '</td> <td class="active">'+response.data[k].cuse + '</td> <td class="active">' + obj[response.data[k].app].Startup.replace("+0800", '') + '</td> <td class="active">' + obj[response.data[k].app].Version + '</td> <td class="active"><a href='+"./seelog?app="+response.data[k].app+"&port="+"{{ .PORT}}"+"&ip="+"{{ .IP}}"+"&lines=100 "+'target="_blank">点击查看</a></td> <input type="button" value='+ ac +' onclick="act(\''+response.data[k].app+"',"+ response.data[k].app.Status+')" />';
+			            tr.innerHTML = '<td class="active" >' + response.data[k].app + '</td> <td class="active">' + obj[response.data[k].app].Status + '</td> <td class="active">' + response.data[k].muse +  '</td> <td class="active">'+response.data[k].cuse + '</td> <td class="active">' + obj[response.data[k].app].Startup.replace("+0800", '') + '</td> <td class="active">' + obj[response.data[k].app].Version + '</td> <td class="active"><a href='+"./seelog?app="+response.data[k].app+"&port="+"{{ .PORT}}"+"&ip="+"{{ .IP}}"+"&lines=100 "+'target="_blank">点击查看</a></td> <input type="button" value='+ ac +' onclick="act(\''+response.data[k].app+"',"+ obj[response.data[k].app].Status+')" />';
 			            tdArr.appendChild(tr)
 		            }
                 }).catch(function (error) {
